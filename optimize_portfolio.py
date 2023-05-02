@@ -55,6 +55,7 @@ class Optimize:
         aum = self.list_arguments[3] #Initial AUM
         overall_weights_df = pd.DataFrame(columns = self.all_tickers)
 
+        aum_list = [aum]
         for i in range(len(self.buy_sell_dates)):
             buy_date = self.buy_sell_dates[i]
             #Get the buy prices at the buy date
@@ -67,6 +68,7 @@ class Optimize:
                     shares = pair[1]
                     sell_price = buy_prices.loc[ticker]
                     aum += sell_price * shares
+                aum_list.append(aum)
 
             #Slice the data frame to get the past 250 trading days of data for the month.
             optimization_data_df = self.full_prices_df.loc[:buy_date][-self.num_days_lookback:]
@@ -97,7 +99,7 @@ class Optimize:
                 portfolio_composition[ticker_names[i]] = shares_bought
         
         overall_weights_df['dates'] = self.buy_sell_dates
-        return aum, overall_weights_df
+        return aum, overall_weights_df, aum_list
     
     def plot_weights(self, df):
         """
@@ -124,5 +126,6 @@ if __name__ == '__main__':
     optimizer = Optimize()
     strategy_results = optimizer.run_optimization_strategy()
     weights_df = strategy_results[1]
+    monthly_aums_list = strategy_results[2]
     optimizer.plot_weights(weights_df)
     optimizer.calculate_data(final_aum = strategy_results[0])
