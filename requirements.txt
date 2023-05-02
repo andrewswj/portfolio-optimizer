@@ -1,0 +1,10 @@
+PyPortfolioOpt == 1.5.4
+pandas
+numpy
+scipy
+datetime
+pandas_market_calendars
+matplotlib
+yfinance
+parseargs
+scikit-learn
