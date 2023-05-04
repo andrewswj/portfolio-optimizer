@@ -8,7 +8,7 @@ class Parseargs:
     def __init__(self):
         """
         Requires the following arguments:
-        --tickers: Space separated list of tickers e.g. AAPL MSFT KO
+        --tickers: Comma-separated list of tickers e.g. AAPL,MSFT,KO
         --b: Beginning date in YYYYMMDD format
         --e: End date in YYYYMMDD format
         --initial_aum: A number > 0. e.g. 1000
@@ -16,7 +16,7 @@ class Parseargs:
         --plot_weights: Indicates whether to plot weight or not.
         """
         self.parser = argparse.ArgumentParser()
-        self.parser.add_argument('--tickers', nargs='+', type=str, help='list of tickers')
+        self.parser.add_argument('--tickers', type=str, help='comma-separated list of tickers')
         self.parser.add_argument('--b', type=str, help='start date in YYYYMMDD format')
         self.parser.add_argument('--e', type=str, help='end date in YYYYMMDD format')
         self.parser.add_argument('--initial_aum', type=float, help='initial assets under management')
@@ -35,7 +35,8 @@ class Parseargs:
         5: plot_weights: True if user entered --plot_weights, False otherwise.
         """
         namespace_args = self.parser.parse_args(namespace = arguments)
-        list_arguments = [namespace_args.tickers, 
+        tickers = namespace_args.tickers.split(',')  # Split the comma-separated tickers string into a list
+        list_arguments = [tickers, 
                           namespace_args.b, 
                           namespace_args.e, 
                           namespace_args.initial_aum, 

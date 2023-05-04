@@ -5,7 +5,7 @@ from calculate_statistics import CalculateStatistics
 import datetime
 import pandas as pd
 import matplotlib.pyplot as plt
-
+import numpy as np
 class Optimize:
     """
     Main file to run. Optimizes a portfolio based on a given optimization strategy. 
@@ -111,17 +111,23 @@ class Optimize:
         if self.list_arguments[5]:#False if the user entered --plot_weights, True otherwise
             df.plot(x = 'dates', y = list(weights_df)[:-1])
             return plt.show()
+        
+    def calculate_daily_returns(self):
+        return np.log(self.full_prices_df / self.full_prices_df.shift(1))
+
     
     def calculate_data(self, final_aum) -> None:
+        daily_returns = self.calculate_daily_returns()
+        
         calculator = CalculateStatistics(initial_aum=self.list_arguments[3],
-                                         final_aum = final_aum,
-                                         b = self.beginning_date,
-                                         e = datetime.datetime.strptime(self.list_arguments[2], '%Y%m%d')
-                                         )
+                                        final_aum=final_aum,
+                                        b=self.beginning_date,
+                                        e=datetime.datetime.strptime(self.list_arguments[2], '%Y%m%d'),
+                                        daily_returns=daily_returns)
+        
         print('Annual Return (%):', calculator.calculate_annual_return())
         print('Profit and Loss ($):', calculator.calculate_pnl())
         print('Stock Return (%):', calculator.calculate_stock_return())
-            
 if __name__ == '__main__':
     optimizer = Optimize()
     strategy_results = optimizer.run_optimization_strategy()
